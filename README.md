@@ -9,13 +9,10 @@ Ensure you've got a running php7 installation on your RPi3. How to do this falls
 Don't forget to install composer as well. I'll assume it's installed at `usr/bin/composer.phar`.
 
 **Step 1**:  
-Clone this repo and install dependencies:
+Install the library:
 
 ```bash
-cd /home/pi/
-git clone https://github.com/unreal4u/ds18b20-sensors.git
-cd ds18b20-sensors/
-composer.phar install -o
+composer.phar require unreal4u/ds18b20-sensor-read
 ```
 
 **Step 2**:  
@@ -52,5 +49,11 @@ Cron examples:
 # Every 5 minutes:
 */5 * * * * /usr/bin/php /home/pi/ds18b20-sensors-readout/app/run.php
 ```
+
+# Known issues
+
+- If there is any problem whatsoever with the sensor, this package will fail silently. This may be changed in the future
+- No real usage of the Logger so far, this will also change in the future in order to establish more easily problematic areas
+- Some idea for the future: be able to publish to multiple topics at the same time
 
 Enjoy!
