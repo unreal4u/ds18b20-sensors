@@ -106,10 +106,8 @@ final class Base {
             ['recursive' => true, 'pattern' => '#w1_slave#']
         )->perform();
 
-        $fileList = $this->fileContentsGetter->getOutput();
-        $this->logger->debug('Retrieved list of sensors', array_keys($fileList));
-
-        foreach ($fileList as $filename => $fileContents) {
+        $sensorCount = 0;
+        foreach ($this->fileContentsGetter->getOutput() as $filename => $fileContents) {
             $temperature = $this->extractTemperature($fileContents);
             $sensorName = explode('/', $filename)[substr_count($mainDirectory, '/')];
             $this->logger->info('Temperature reading done', [
@@ -119,7 +117,6 @@ final class Base {
 
             $message->setTopicName($this->config->getMQTTCredentials()['topicName'] . $sensorName);
             $message->setPayload($temperature);
-
             $publishMessage->setMessage($message);
 
             try {
@@ -128,8 +125,9 @@ final class Base {
                 var_dump($e->getMessage());
                 die();
             }
+            $sensorCount++;
         }
-        $this->logger->debug('Finished run', ['numberOfSensors' => \count($fileList)]);
+        $this->logger->debug('Finished run', ['numberOfSensors' => $sensorCount]);
 
         return $this;
     }

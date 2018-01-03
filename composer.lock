@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "944bbd82d15ab2d4aa4ad79803a28cb1",
+    "content-hash": "6c2e1d36e251fceea02d623a060b49cd",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -316,16 +316,16 @@
         },
         {
             "name": "unreal4u/file-operations",
-            "version": "v0.4.0",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unreal4u/fileOperations.git",
-                "reference": "e8aac4207c9de8d55470f204c1fca950f277735f"
+                "reference": "a695e402e0b174905015c37f0d242c1270f45953"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unreal4u/fileOperations/zipball/e8aac4207c9de8d55470f204c1fca950f277735f",
-                "reference": "e8aac4207c9de8d55470f204c1fca950f277735f",
+                "url": "https://api.github.com/repos/unreal4u/fileOperations/zipball/a695e402e0b174905015c37f0d242c1270f45953",
+                "reference": "a695e402e0b174905015c37f0d242c1270f45953",
                 "shasum": ""
             },
             "require": {
@@ -355,7 +355,7 @@
                 }
             ],
             "description": "This class is a collection of functions that deals with files",
-            "time": "2018-01-02T23:43:11+00:00"
+            "time": "2018-01-03T15:36:39+00:00"
         },
         {
             "name": "unreal4u/mqtt",
@@ -419,6 +419,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.0.0"
+    },
     "platform-dev": []
 }

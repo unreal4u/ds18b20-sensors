@@ -14,9 +14,10 @@
     }
   ],
   "require": {
+    "php": ">=7.0.0",
     "roave/security-advisories": "dev-master",
     "unreal4u/mqtt": "dev-master",
-    "unreal4u/file-operations": "~0.4",
+    "unreal4u/file-operations": "~0.4.1",
     "monolog/monolog": "~1.23"
   },
   "autoload" : {

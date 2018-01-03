@@ -9,7 +9,8 @@ Ensure you've got a running php7 installation on your RPi3. How to do this falls
 Don't forget to install composer as well. I'll assume it's installed at `usr/bin/composer.phar`.
 
 **Step 1**:  
-Install the library in a fresh directory:
+Install the library in a fresh directory, the minimum stability is there because many dependencies on this class does
+not yet have any stable releases, this will change in the future:
 
 ```bash
 mkdir sensor-readout
