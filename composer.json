@@ -1,0 +1,27 @@
+{
+  "name": "unreal4u/ds18b20-sensor-read",
+  "description": "Will read out the w1_slave file of a DS18B20 sensor and send the output to a MQTT broker",
+  "keywords": [
+    "mqtt",
+    "php"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Camilo Sperberg",
+      "email": "me+ds18b20sensor@unreal4u.com",
+      "homepage": "https://github.com/unreal4u/ds18b20-sensors/graphs/contributors"
+    }
+  ],
+  "require": {
+    "roave/security-advisories": "dev-master",
+    "unreal4u/mqtt": "dev-master",
+    "unreal4u/file-operations": "~0.4",
+    "monolog/monolog": "~1.23"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "unreal4u\\DS18B20Sensor\\" : "app"
+    }
+  }
+}
