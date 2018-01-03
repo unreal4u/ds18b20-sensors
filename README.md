@@ -14,7 +14,15 @@ Install the library in a fresh directory:
 ```bash
 mkdir sensor-readout
 cd sensor-readout
-composer.phar require unreal4u/ds18b20-sensor-read
+/bin/cat <<EOM >composer.json
+{
+  "minimum-stability": "dev",
+  "require": {
+    "unreal4u/ds18b20-sensor-read": "dev-master"
+  }
+}
+EOM
+composer.phar install -o --no-dev
 ```
 
 **Step 2**:  
@@ -32,12 +40,52 @@ Making the sensors actually work falls outside the scope of this application and
 how to do this.
 
 **Step 3**:  
-In the folder `app/Configuration/`, create a new configuration file that extends `BaseConfig.php` and adjust the values
-that you use in your environment. Take `DevelopmentConfig.php` as an example.
+Create a configuration file. Create a new configuration file that extends `BaseConfig.php` and adjust the values that
+you use in your environment:
+```php
+<?php
+// Filename: app/ProductionConfig.php
+
+declare(strict_types=1);
+
+use unreal4u\DS18B20Sensor\Configuration\BaseConfig;
+
+class ProductionConfig extends BaseConfig {
+    public function getMQTTCredentials(): array
+    {
+        return array_merge(parent::getMQTTCredentials(), [
+            'clientId' => 'sensorWriter', // Which clientId this client will pass on to the broker
+            'host' => '192.168.1.45',     // The host of the broker
+            'user' => 'XXXXXXXX',         // Optional username
+            'pass' => 'YYYYYYYY',         // Optional password
+        ]);
+    }
+}
+```
 
 **Step 4**:  
-Create your proyect! Take `examples/index.php` as an example and go ahead! I'll suppose you have created an `app` folder
-in which you have created your own configuration and runnable file.
+Create your proyect! I've included a small example of my current setup here, you can also take a look at the 
+`examples/index.php` as an example and go ahead! I'll suppose you have created an `app` folder in which you have created
+your own configuration and runnable file:
+```php
+<?php
+// Filename: app/run.php
+
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use unreal4u\DS18B20Sensor\Base;
+
+chdir(__DIR__ . '/../');
+include 'vendor/autoload.php';
+include 'app/ProductionConfig.php';
+
+// Initialize objects we'll need
+$logger = new Logger('main');
+$logger->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+$baseProgram = new Base(new ProductionConfig(), $logger);
+$baseProgram->runProgram();
+$logger->info('Program finished running');
+```
 
 **Step 5**:  
 Set up a cronjob that runs every X minutes in order to read out the sensors.

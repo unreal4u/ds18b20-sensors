@@ -81,6 +81,7 @@ final class Base {
     {
         try {
             $this->MQTTClient->sendData($connect);
+            $this->logger->debug('Connected to broker successfully');
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             die();
@@ -106,6 +107,7 @@ final class Base {
         )->perform();
 
         $fileList = $this->fileContentsGetter->getOutput();
+        $this->logger->debug('Retrieved list of sensors', array_keys($fileList));
 
         foreach ($fileList as $filename => $fileContents) {
             $temperature = $this->extractTemperature($fileContents);
@@ -127,6 +129,7 @@ final class Base {
                 die();
             }
         }
+        $this->logger->debug('Finished run', ['numberOfSensors' => \count($fileList)]);
 
         return $this;
     }
@@ -143,6 +146,7 @@ final class Base {
         $rawTemperatureData = substr($dataLines[1], strpos($dataLines[1], ' t=') + 3);
         // Strange construct: count the number of slashes in $mainDirectory and this will be the index of the sensor's name
         $rawTemperature = $rawTemperatureData / 1000;
+        $this->logger->debug('Raw temperature retrieved', ['rawTemperature' => $rawTemperatureData]);
         // TODO Transform to Kelvin or Fahrenheit
         return sprintf('%.1f', $rawTemperature);
     }
