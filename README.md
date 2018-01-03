@@ -9,19 +9,23 @@ Ensure you've got a running php7 installation on your RPi3. How to do this falls
 Don't forget to install composer as well. I'll assume it's installed at `usr/bin/composer.phar`.
 
 **Step 1**:  
-Install the library:
+Install the library in a fresh directory:
 
 ```bash
+mkdir sensor-readout
+cd sensor-readout
 composer.phar require unreal4u/ds18b20-sensor-read
 ```
 
 **Step 2**:  
-In the folder `sensors/`, create symlinks to the actual sensor id. Make the symlink a name for your sensor, this name
-will be used for the topic name and general logging, for example: 
+Create a folder `sensors/`, and in there create symlinks to the actual sensor id. Make the symlink a name for your
+sensor, this name will be used for the topic name and general logging, for example: 
 
 ```bash
+mkdir sensors
 cd sensors/
-ln -s /sys/bus/w1/devices/w1_bus_master1/28-02162cdff1ee workshop
+ln -s /sys/bus/w1/devices/w1_bus_master1/XX-YYYYYYYYYYYY workshop
+ln -s /sys/bus/w1/devices/w1_bus_master1/ZZ-ABCDEFABCDEF kitchen
 ```
 
 Making the sensors actually work falls outside the scope of this application and you'll have to find out for yourself
