@@ -45,6 +45,7 @@ final class Base {
     {
         $this->config = $config;
         $this->logger = $logger;
+        $this->logger->debug('Assigning basic variables');
 
         $this->initializeVariables();
     }
@@ -103,11 +104,12 @@ final class Base {
 
         $this->fileContentsGetter->constructFileList(
             $mainDirectory,
-            ['recursive' => true, 'pattern' => '#/\w+/w1_slave$#']
+            ['recursive' => true, 'pattern' => '#/\w+/w1_slave$#', 'maxDepth' => 1]
         )->perform();
 
         $sensorCount = 0;
         foreach ($this->fileContentsGetter->getOutput() as $filename => $fileContents) {
+            $this->logger->debug('Extracting temperature and sensorName', ['filename' => $filename]);
             $temperature = $this->extractTemperature($fileContents);
             // This strange construct eases development: it counts the number of directories and returns the relevant
             $sensorName = explode('/', $filename)[substr_count($mainDirectory, '/')];
@@ -119,6 +121,7 @@ final class Base {
 
             $message->setTopicName($this->config->getMQTTCredentials()['topicName'] . $sensorName);
             $message->setPayload($temperature);
+            $message->setRetainFlag(true);
             $publishMessage->setMessage($message);
 
             try {
