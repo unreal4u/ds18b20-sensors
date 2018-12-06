@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use unreal4u\DS18B20Sensor\Configuration\BaseConfig;
 use unreal4u\FileOperations\FileContentsGetter;
 use unreal4u\MQTT\Client;
+use unreal4u\MQTT\DataTypes\ClientId;
 use unreal4u\MQTT\DataTypes\Message;
 use unreal4u\MQTT\DataTypes\TopicName;
 use unreal4u\MQTT\Internals\ClientInterface;
@@ -60,7 +61,10 @@ final class Base {
         $this->fileContentsGetter = new FileContentsGetter();
         $mqttConnectionParameters = $this->config->getMQTTCredentials();
 
-        $connectionParameters = new Parameters($mqttConnectionParameters['clientId'], $mqttConnectionParameters['host']);
+        $connectionParameters = new Parameters(
+            new ClientId($mqttConnectionParameters['clientId']),
+            $mqttConnectionParameters['host']
+        );
         $connectionParameters->setCredentials($mqttConnectionParameters['user'], $mqttConnectionParameters['pass']);
 
         $connect = new Connect();
