@@ -7,8 +7,9 @@ namespace unreal4u\DS18B20Sensor;
 use Psr\Log\LoggerInterface;
 use unreal4u\DS18B20Sensor\Configuration\BaseConfig;
 use unreal4u\FileOperations\FileContentsGetter;
-use unreal4u\MQTT\Application\Message;
 use unreal4u\MQTT\Client;
+use unreal4u\MQTT\DataTypes\Message;
+use unreal4u\MQTT\DataTypes\TopicName;
 use unreal4u\MQTT\Internals\ClientInterface;
 use unreal4u\MQTT\Protocol\Connect;
 use unreal4u\MQTT\Protocol\Connect\Parameters;
@@ -60,8 +61,7 @@ final class Base {
         $mqttConnectionParameters = $this->config->getMQTTCredentials();
 
         $connectionParameters = new Parameters($mqttConnectionParameters['clientId'], $mqttConnectionParameters['host']);
-        $connectionParameters->setUsername($mqttConnectionParameters['user']);
-        $connectionParameters->setPassword($mqttConnectionParameters['pass']);
+        $connectionParameters->setCredentials($mqttConnectionParameters['user'], $mqttConnectionParameters['pass']);
 
         $connect = new Connect();
         $connect->setConnectionParameters($connectionParameters);
@@ -81,8 +81,12 @@ final class Base {
     private function connectToMQTTBroker(Connect $connect): self
     {
         try {
-            $this->MQTTClient->sendData($connect);
-            $this->logger->debug('Connected to broker successfully');
+            $this->MQTTClient->processObject($connect);
+            if ($this->MQTTClient->isConnected()) {
+                $this->logger->debug('Connected to broker successfully');
+            } else {
+                throw new \RuntimeException('Could not connect to broker');
+            }
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             die();
@@ -99,7 +103,6 @@ final class Base {
     public function runProgram(): self
     {
         $mainDirectory = $this->config->getSensorDirectory();
-        $message = new Message();
         $publishMessage = new Publish();
 
         $this->fileContentsGetter->constructFileList(
@@ -119,13 +122,16 @@ final class Base {
                 'temperature' => $temperature,
             ]);
 
-            $message->setTopicName($this->config->getMQTTCredentials()['topicName'] . $sensorName);
-            $message->setPayload($temperature);
-            $message->setRetainFlag(true);
-            $publishMessage->setMessage($message);
 
+            $message = new Message(
+                $temperature,
+                new TopicName($this->config->getMQTTCredentials()['topicName'] . $sensorName)
+            );
+            $message->setRetainFlag(true);
+
+            $publishMessage->setMessage($message);
             try {
-                $this->MQTTClient->sendData($publishMessage);
+                $this->MQTTClient->processObject($publishMessage);
             } catch (\Exception $e) {
                 var_dump($e->getMessage());
                 die();
